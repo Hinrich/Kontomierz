@@ -1,0 +1,31 @@
+#include "KontomierzReply.h"
+#include <QtNetwork>
+#include <QTimer>
+#include <iostream>
+
+KontomierzReply::KontomierzReply(const  char * a)
+{
+ QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+ 
+ QNetworkRequest *request = new QNetworkRequest;
+ connect(manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+            SLOT(provideAuthenication(QNetworkReply*,QAuthenticator*)));
+
+ request->setUrl(QUrl(a));
+ reply = manager->get(*request);
+  connect(reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+  
+}
+void KontomierzReply::slotReadyRead()
+{
+  qDebug()<<reply->readAll();
+}
+void KontomierzReply::provideAuthenication(QNetworkReply *reply, QAuthenticator *ator)
+{
+   // qDebug() << reply->readAll(); // this is just to see what we received
+    ator->setUser(QString("wojciech.liana@gmail.com"));
+    ator->setPassword(QString("89080604498wojtek"));
+}
+
+
+
